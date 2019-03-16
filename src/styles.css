@@ -5,3 +5,10 @@ body{
 h1{
     color: chartreuse;
 }
+div{
+    border-width: 5px;
+    border-color: aqua;
+}
+#narratorConsole{
+    text-align:left
+}
