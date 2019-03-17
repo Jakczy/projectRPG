@@ -1,14 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
 body{
     background-color: black;
-}
-h1{
-    color: chartreuse;
+    color: aliceblue;
+    margin-left: auto;
+    margin-right: auto;
 }
 div{
-    border-width: 5px;
-    border-color: aqua;
+    margin: 0 auto;
+}
+#wrapper{
+    width: 800px;
 }
 #narratorConsole{
-    text-align:left
+    float: left;
+    height: 300px;
+    width: 500px;
+    text-align:left;
+    background-color: aqua;
+}
+#backgroundPhotos{
+    float: left;
+    height: 150px;
+    width: 500px;
+    background-color: blue;
+}
+#playerConsole{
+    float: left;
+    height: 150px;
+    width: 500px;
+    background-color: blueviolet;
+}
+#equipment{
+    float: right;
+    height: 300px;
+    width: 300px;
+    background-color: wheat;
+}
+#questLogAndOthers{
+    float: right;
+    height: 300px;
+    width: 300px;
+    background-color: tomato;
 }

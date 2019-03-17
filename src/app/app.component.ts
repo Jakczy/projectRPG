@@ -1,12 +1,11 @@
-//Don't change it
-import { Component } from '@angular/core';
-
+import { Component, ViewChild, ElementRef, NgModule } from '@angular/core';
+//import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+//import * as $ from 'jquery';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  //You can change it from here
   title = 'Ku chwale gothica';
 }
