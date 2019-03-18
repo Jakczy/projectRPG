@@ -10,6 +10,7 @@ div{
     text-align: center;
     white-space: pre-line;
 }
+
 #wrapper{
     width: 800px;
     height: 600px;
@@ -32,7 +33,6 @@ div{
     float: left;
     height: 150px;
     width: 500px;
-    background-color: blueviolet;
 }
 #equipment{
     float: right;

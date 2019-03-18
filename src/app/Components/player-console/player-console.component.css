@@ -1,0 +1,22 @@
+input{
+    background-color: transparent;
+    border-style: hidden;
+    color: chartreuse;
+}
+#playerConsole{
+    position: relative;
+    background-color:black;
+    color: chartreuse;
+    text-align: left;
+    white-space: nowrap;
+}
+ul{
+    position: absolute;
+    left: 0;
+    list-style-type: '$ ';
+    display: block;
+}
+form{
+    position: absolute;
+    bottom: 0;
+}

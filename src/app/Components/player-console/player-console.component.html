@@ -1,3 +1,9 @@
-<h1>
-  Konsola gracza
-</h1>
+<div id="playerConsole" onClick="document.getElementById('data').focus(); return false;">
+  <ul>
+    <li *ngFor="let command of lastUsedCommands">{{command}}</li>
+  </ul>
+  <form (submit)="addCommand(command.value)">
+    <label for="command">$</label>
+    <input id="data" type="text" #command />
+  </form>
+</div>

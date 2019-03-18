@@ -6,10 +6,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./player-console.component.css']
 })
 export class PlayerConsoleComponent implements OnInit {
+  lastUsedCommands: string[];
 
   constructor() { }
 
   ngOnInit() {
+    this.lastUsedCommands = ['','','','',''];
+  }
+
+  addCommand(command) {
+    this.lastUsedCommands.push(command);
+    this.lastUsedCommands.splice(0,1);
+    return false;
   }
 
 }
