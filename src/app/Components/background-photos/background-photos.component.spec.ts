@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MainScreenComponent } from './main-screen.component';
+import { BackgroundPhotosComponent } from './background-photos.component';
 
-describe('MainScreenComponent', () => {
-  let component: MainScreenComponent;
-  let fixture: ComponentFixture<MainScreenComponent>;
+describe('BackgroundPhotosComponent', () => {
+  let component: BackgroundPhotosComponent;
+  let fixture: ComponentFixture<BackgroundPhotosComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MainScreenComponent ]
+      declarations: [ BackgroundPhotosComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MainScreenComponent);
+    fixture = TestBed.createComponent(BackgroundPhotosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

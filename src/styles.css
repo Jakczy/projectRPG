@@ -7,21 +7,25 @@ body{
 }
 div{
     margin: 0 auto;
+    text-align: center;
+    white-space: pre-line;
 }
 #wrapper{
     width: 800px;
+    height: 600px;
+    overflow: hidden;
 }
 #narratorConsole{
     float: left;
     height: 300px;
     width: 500px;
-    text-align:left;
     background-color: aqua;
 }
 #backgroundPhotos{
     float: left;
     height: 150px;
     width: 500px;
+    background-image: url("https://cache.desktopnexus.com/thumbseg/29/29652-bigthumbnail.jpg");
     background-color: blue;
 }
 #playerConsole{
@@ -42,71 +46,3 @@ div{
     width: 300px;
     background-color: tomato;
 }
-.dirTerminalType-caret {
-    display: inline-block;
-    width: 3px;
-    margin-bottom: -2px;
-    margin-left: 3px;
-    margin-right: -4px;
-    height: 16px;
-    -webkit-animation: dirTerminalType-blink 0.8s infinite;
-       -moz-animation: dirTerminalType-blink 0.8s infinite;
-         -o-animation: dirTerminalType-blink 0.8s infinite;
-            animation: dirTerminalType-blink 0.8s infinite;
-  }
-  @-webkit-keyframes dirTerminalType-blink {
-    0% {
-      opacity: 0;
-    }
-    49% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  @-moz-keyframes dirTerminalType-blink {
-    0% {
-      opacity: 0;
-    }
-    49% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  @-o-keyframes dirTerminalType-blink {
-    0% {
-      opacity: 0;
-    }
-    49% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  @keyframes dirTerminalType-blink {
-    0% {
-      opacity: 0;
-    }
-    49% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
