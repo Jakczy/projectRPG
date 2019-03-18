@@ -25,7 +25,10 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/dirTerminalType.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
