@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TerminalService } from '../../Services/terminal.service'
+import { PlayerNarratorService } from '../../Services/player-narrator.service';
 
 @Component({
   selector: 'app-narrator-console',
@@ -7,16 +7,19 @@ import { TerminalService } from '../../Services/terminal.service'
   styleUrls: ['./narrator-console.component.css']
 })
 export class NarratorConsoleComponent implements OnInit {
-  constructor(private terminalService:TerminalService) {
-   }
+  message:string;
+  
+  constructor(private data: PlayerNarratorService) { }
+
   ngOnInit() {
-    //this.playAudio();
+    this.playAudio();
+    this.data.currentMessage.subscribe(message => this.message = message);
   }
-  //TODO
-  /*playAudio(){
-    let audio = new Audio();
-    audio.src = "main2.ogg";
+  //It's working but only with external src like: links. I don't know why it working this way and i'm to tired to find out.
+  playAudio(){
+    var audio = new Audio();
+    audio.src = '../../Music/main.mp3';//It should be external link.
     audio.load();
     audio.play();
-  }*/
+  }
 }

@@ -7,9 +7,8 @@ import { NarratorConsoleComponent } from './Components/narrator-console/narrator
 import { EquipmentComponent } from './Components/equipment/equipment.component';
 import { PlayerConsoleComponent } from './Components/player-console/player-console.component';
 import { BackgroundPhotosComponent } from './Components/background-photos/background-photos.component';
+import { AudioContextModule } from 'angular-audio-context';
 import { QuestLogAndOthersComponent } from './Components/quest-log-and-others/quest-log-and-others.component';
-
-import { TerminalService } from './Services/terminal.service';
 
 @NgModule({
   declarations: [
@@ -22,9 +21,10 @@ import { TerminalService } from './Services/terminal.service';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AudioContextModule.forRoot('balanced')
   ],
-  providers: [TerminalService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
