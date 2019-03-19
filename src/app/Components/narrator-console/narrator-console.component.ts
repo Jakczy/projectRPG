@@ -7,10 +7,16 @@ import { TerminalService } from '../../Services/terminal.service'
   styleUrls: ['./narrator-console.component.css']
 })
 export class NarratorConsoleComponent implements OnInit {
-
-  constructor(private terminalService:TerminalService) { }
-
+  constructor(private terminalService:TerminalService) {
+   }
   ngOnInit() {
+    //this.playAudio();
   }
-
+  //TODO
+  /*playAudio(){
+    let audio = new Audio();
+    audio.src = "main2.ogg";
+    audio.load();
+    audio.play();
+  }*/
 }
