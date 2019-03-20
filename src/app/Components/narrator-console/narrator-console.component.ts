@@ -18,7 +18,7 @@ export class NarratorConsoleComponent implements OnInit {
   //It's working but only with external src like: links. I don't know why it working this way and i'm to tired to find out.
   playAudio(){
     var audio = new Audio();
-    audio.src = '../../Music/main.mp3';//It should be external link.
+    audio.src = '';//It should be external link.
     audio.load();
     audio.play();
   }
