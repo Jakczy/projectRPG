@@ -1,0 +1,18 @@
+#narratorConsole{
+    padding-top: 10px;
+    position: relative;
+    background-color:black;
+    color: chartreuse;
+    text-align: left;
+    white-space: wrap;
+    overflow: auto;
+}
+
+ul li{
+    list-style-type: '';
+    cursor: pointer;
+}
+p::before{
+    content: "\A";
+    white-space: pre;
+}

@@ -3,7 +3,7 @@
     <li *ngFor="let command of lastUsedCommands">{{command}}</li>
   </ul>
   <form (submit)="addCommand(command.value)">
-    <label for="command">$</label>
+    <label for="command">$></label>
     <input id="data" type="text" #command />
   </form>
 </div>

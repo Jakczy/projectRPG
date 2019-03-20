@@ -1,7 +1,4 @@
 import { Component, ViewChild, ElementRef, NgModule } from '@angular/core';
-import * as $ from 'jquery';
-window["$"] = $;
-window["jQuery"] = $;
 
 @Component({
   selector: 'app-root',

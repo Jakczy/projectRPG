@@ -1,27 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { PlayerNarratorService } from '../../Services/player-narrator.service';
-import { stringify } from 'querystring';
+import { CommandSupportService } from '../../Services/command-support.service';
 
 @Component({
   selector: 'app-player-console',
   templateUrl: './player-console.component.html',
   styleUrls: ['./player-console.component.css']
 })
+
 export class PlayerConsoleComponent implements OnInit {
   lastUsedCommands: string[];
-  message:string;
+  command: string;
 
-  constructor(private data: PlayerNarratorService) { }
+  constructor(private dataCSS: CommandSupportService) { }
 
   ngOnInit() {
     this.lastUsedCommands = ['','','','',''];
-    this.data.currentMessage.subscribe(message => this.message = message);
   }
 
   addCommand(command) {
     this.lastUsedCommands.push(command);
     this.lastUsedCommands.splice(0,1);
-    this.data.changeMessage(command);
+    this.dataCSS.processCommand(command);
     return false;
   }
 }

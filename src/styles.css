@@ -4,6 +4,7 @@ body{
     color: aliceblue;
     margin-left: auto;
     margin-right: auto;
+    cursor: default;
 }
 div{
     margin: 0 auto;
