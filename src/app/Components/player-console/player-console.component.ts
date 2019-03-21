@@ -17,9 +17,10 @@ export class PlayerConsoleComponent implements OnInit {
     this.lastUsedCommands = ['','','','',''];
   }
 
-  addCommand(command) {
+  addCommand(command: string) {
     this.lastUsedCommands.push(command);
     this.lastUsedCommands.splice(0,1);
+    command = command.toLowerCase();
     this.dataCSS.processCommand(command);
     return false;
   }

@@ -6,19 +6,17 @@ import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 })
 export class CommandSupportService {
 
-  private commandSource = new BehaviorSubject<any>(undefined);
+  private commandSource = new BehaviorSubject<string>(undefined);
   currentCommand = this.commandSource.asObservable();
 
   constructor() { }
 
-  processCommand (command: any){
+  processCommand (command: string){
     this.commandSource.next(command);
+    return false;
   }
 
-  /*
-  }*/
-
-  getEventSubject(): BehaviorSubject<any> {
+  getEventSubject(): BehaviorSubject<string> {
     return this.commandSource;
   }
 }

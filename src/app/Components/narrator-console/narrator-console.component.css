@@ -3,16 +3,24 @@
     position: relative;
     background-color:black;
     color: chartreuse;
-    text-align: left;
+    text-align: center;
     white-space: wrap;
     overflow: auto;
+    font-size: 15px;
 }
-
-ul li{
-    list-style-type: '';
+ul, ul li{
+    list-style-type: none;
     cursor: pointer;
+}
+#newGame{
+    float: left;
 }
 p::before{
     content: "\A";
     white-space: pre;
+}
+pre{
+    color: chartreuse;
+    text-align: center;
+    font-size: 3px;
 }

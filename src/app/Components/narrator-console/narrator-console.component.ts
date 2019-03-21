@@ -8,38 +8,23 @@ import * as $ from 'jquery';
   styleUrls: ['./narrator-console.component.css']
 })
 export class NarratorConsoleComponent implements OnInit {
-  //message: string;
-  //@Output() myEvent = new EventEmitter();
-  
+
   constructor(private dataCSS: CommandSupportService) { }
 
   ngOnInit() {
-    this.playAudio();
-    var narratorConsole = document.getElementById("narratorConsole");
-    var para = document.createElement("p");
+    //this.playAudio();
+    $('#narratorConsole').append("\n" + this.rooms.menu.description);
     //It's waiting for new information from player console and open functions respectively
-    this.dataCSS.getEventSubject().subscribe((command: any) => {
-      if (command !== undefined) {
-        switch (command) {
-          case 'New game': narratorConsole.appendChild(para.appendChild(document.createTextNode("\nRozpoczynasz nową grę!"))); break;
-          case 'Load game': alert("Ładujesz zapisany stan gry"); break;
-          case 'Options': alert("Otwierasz opcje"); break;
-          default: alert("Default"); break;
-        }
-      }
+    this.dataCSS.getEventSubject().subscribe((command: string) => {
+      if (command !== undefined){
+        this.changeRoom(command);
+      } 
     });
-
     //TODO Clicking on list variable send command to player console
-    $('#menu li').click(() => {
-      //this.message = $(this).text();
+    /*$('#menu li').click(() => {
       //alert($(this).text());
-      //alert(this.command);
-      //this.dataCSS.currentCommand.subscribe(command => this.command = command);
-      //this.dataPNS.changeMessage($(this).text());
-      //this.myEvent.emit(null);
-
       //this.dataCSS.processCommand($(this).text());
-    });
+    });*/
   }
   //It's working but only with external src like: links. I don't know why it working this way and i'm to tired to find out.
   playAudio(){
@@ -47,5 +32,29 @@ export class NarratorConsoleComponent implements OnInit {
     audio.src = '';//It should be external link.
     audio.load();
     audio.play();
+  }
+
+  changeRoom(zmienna: string){
+    if(this.rooms[this.currentRoom].directions[zmienna] !== undefined){
+      this.currentRoom = this.rooms[this.currentRoom].directions[zmienna];
+      $('#narratorConsole').append("\n" + this.rooms[this.currentRoom].description);
+    } else {
+      $('#narratorConsole').append("\nHmm?");
+    }
+    $("html, #narratorConsole").animate({scrollTop: $(document).height()}, "slow");
+  };
+
+  currentRoom = "menu";
+  rooms = {
+    "menu" : {
+      "description" : "<lu><li>Nowa gra</li><li>Wczytaj grę</li><li>Opcję</li></lu>",
+      "directions" : {
+        "nowa gra" : "new game"
+      }
+    },
+    "new game" : {
+      "description" : "Rozpoczynasz nową grę!\nKim jesteś?\n<lu id='newGame'><li>Człowiek</li><li>Nieumarły</li></lu>",
+
+    }
   }
 }
