@@ -12,9 +12,6 @@ ul, ul li{
     list-style-type: none;
     cursor: pointer;
 }
-#newGame{
-    float: left;
-}
 p::before{
     content: "\A";
     white-space: pre;

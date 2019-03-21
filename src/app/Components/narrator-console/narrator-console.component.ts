@@ -18,13 +18,15 @@ export class NarratorConsoleComponent implements OnInit {
     this.dataCSS.getEventSubject().subscribe((command: string) => {
       if (command !== undefined){
         this.changeRoom(command);
-      } 
+        //$('html, #narratorConsole').append($("<link href='narrator-console.component.css' type='text/css' rel='stylesheet'>"));
+        $("html, #narratorConsole").animate({scrollTop: $(document).height()}, "slow");
+      }
     });
     //TODO Clicking on list variable send command to player console
-    /*$('#menu li').click(() => {
-      //alert($(this).text());
+    $('#menu li').click(() => {
+      alert($(this).text());
       //this.dataCSS.processCommand($(this).text());
-    });*/
+    });
   }
   //It's working but only with external src like: links. I don't know why it working this way and i'm to tired to find out.
   playAudio(){
@@ -41,7 +43,7 @@ export class NarratorConsoleComponent implements OnInit {
     } else {
       $('#narratorConsole').append("\nHmm?");
     }
-    $("html, #narratorConsole").animate({scrollTop: $(document).height()}, "slow");
+    
   };
 
   currentRoom = "menu";
@@ -53,7 +55,7 @@ export class NarratorConsoleComponent implements OnInit {
       }
     },
     "new game" : {
-      "description" : "Rozpoczynasz nową grę!\nKim jesteś?\n<lu id='newGame'><li>Człowiek</li><li>Nieumarły</li></lu>",
+      "description" : "Rozpoczynasz nową grę!\nKim jesteś?\n<lu><li>Człowiek</li><li>Nieumarły</li></lu>",
 
     }
   }
