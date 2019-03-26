@@ -18,13 +18,12 @@ export class NarratorConsoleComponent implements OnInit {
     this.dataCSS.getEventSubject().subscribe((command: string) => {
       if (command !== undefined) this.playerInput(command);
     });
-    this.load("kaplan", this.dialoguesTable['kaplan'].start);
-    //TODO Clicking on list variable send command to player console
+    this.load("kaplan", this.dialoguesTable['kaplan']);
+    //Maybe TODO Clicking on list variable send command to player console
     $('lu li').click(() => {
       alert($(this).text());
       //this.dataCSS.processCommand($(this).text());
     });
-    this.playerDialogueInput('');
   }  
 
   //It's working but only with external src like: links because webpage cant access files on your pc directly
@@ -62,7 +61,7 @@ export class NarratorConsoleComponent implements OnInit {
       case 'd': this.playerDialogueInput(input); break;
       case 'f': this.playerFightInput(input); break;
       case 'm': this.playerMenuInput(input); break;
-      default: this.playerGameInput(input); break;     
+      default: this.playerGameInput(input); break;
     }
   }
 
@@ -81,15 +80,12 @@ export class NarratorConsoleComponent implements OnInit {
     this.writeText('<p>');
     switch(input){
       case 'spojrz': this.writeText(this.rooms[this.currentRoom].description); break;
-      case 'north' : this.changeRoom(input); break;
-      case 'south' : this.changeRoom(input); break;
-      case 'east' : this.changeRoom(input); break;
-      case 'west' : this.changeRoom(input); break;
+      case 'north' || 'south' || 'east' || 'west' : this.changeRoom(input); break;
       case 'help': this.showHelp(); break;
       default: switch(input.split(' ')[0]){
         case 'idz': this.changeRoom(input.split(' ')[1]); break;
         case 'uzyj': this.useItem(input.split(' ')[1]); break;
-        case 'rozmawiaj': this.playerChangeInput('d'); break;
+        case 'rozmawiaj': this.dialogueControl(input.split(' ')[1]); break;
         default: this.writeText('Hmm?');
       }
     }
@@ -101,13 +97,30 @@ export class NarratorConsoleComponent implements OnInit {
   }
 
   dialogueControl(actor:string){
-
+    let flag;
+    for(var i = 0; i < this.rooms[this.currentRoom].npc.length; i++){
+      if(this.rooms[this.currentRoom].npc[0] === actor){
+        flag = 1;
+        break;
+      }
+    }
+    console.log(flag);
+    if(flag){
+      this.playerChangeInput('d');
+      this.currentActor = actor;
+      this.playerInput('');
+    }
   }
 
   playerDialogueInput(input:string){
     this.writeText('<p>');
-    var dialogue = this.interact("kaplan", "gracz", input);
-    if(dialogue){
+    var dialogue = this.interact(this.currentActor, "gracz", input);
+    console.log('dialogue: ', dialogue);
+    if(dialogue.text === 'koniec'){
+      this.playerChangeInput('g');
+      this.playerInput('spojrz');
+      console.log('zmienilem tryb na:', this.currentState);
+    }else if(dialogue){
       this.writeText(dialogue.text);
       if(dialogue.responses) {
         for(var i = 0; i < dialogue.responses.length; i++){
@@ -127,8 +140,9 @@ export class NarratorConsoleComponent implements OnInit {
     this.writeText('</lu>');
   }
 
+  currentActor = 'default';
   currentDialogue = "default";
-  currentState = 'd';
+  currentState = 'm';
   previousRoom = "default";
   currentRoom = "1";
   commands = ['idź [gdzie]', 'podnieś [co]', 'spójrz', 'rozmawiaj [imie]', 'użyj [co]', 'zapisz [nazwa]', 'wczytaj [nazwa]', 'załóż [co]'];
@@ -138,13 +152,14 @@ export class NarratorConsoleComponent implements OnInit {
     "3": "Tutor: Podczas gry napotkasz wiele miejsc, w których mogą być ukryte ciekawe przedmioty, te nieciekawe jak również absolutnie nic.",
     "4": "Tutor: Znalazłeś element ekwipunku. Aby go ubrać należy użyć polecenia <b>załóż</b>.",
     "5": "Tutor: Spotkałeś pierwszą postać niezależną (NPC). Postaci te będziesz spotykał niezwykle często. Idź porozmawiać z Kapłanem. Aby to zrobić użyj polecenia <b>rozmawiaj</b>.",
+    "6": "Tutor: Otrzymałeś właśnie dokument. Dokumenty można czytać za pomocą polecenia <b>czytaj</b>."
   };
   rooms = {
     "1": {
       "start": "Budzisz się. Ostre światło razi twe jeszcze senne oczy. Znajdujesz się w surowym, zbudowanym z marmuru pomieszczeniu. Wstajesz z drewnianego łóżka.",
       "description": "Rozglądasz się po marmurowym pokoju. Na północy widzisz okute drewniane drzwi. Przy wschodniej ścianie stoi komoda. Przy południowej łóżko na którym spałeś. Od zachodniej ściany bije jasne, kolorowe światło słoneczne przedostające się przez wielobarwny witraż.",
       "items": {
-        "komoda": "Znajdujesz: 10 ZM (złota moneta), onuce. ",
+        "komoda": "Znajdujesz: 10 ZM (złota moneta), onuce.",
         "lozko": "",
       },
       "directions": {
@@ -154,18 +169,19 @@ export class NarratorConsoleComponent implements OnInit {
     "2": {
       "start": "Otwierasz cięższe niż myślałeś drewniane drzwi i wchodzisz do zdecydowanie większego, również marmurowego pomieszczenia. Po wystroju poznajesz, że jest to świątynia.",
       "description": "Przy wschodniej ścianie, przy ołtarzu stoi Kapłan Verdes. Na zachodzie widzisz ogromne metalowe drzwi prawdopodobnie prowadzące na zewnątrz budynku. Północną ścianę pokrywa istna wystawa rozmaitych wiraży, a pod nimi kolejne drewniane drzwi. Na południu również znajdują się drzwi.",
-      "npc": {
-        "kaplan" : "",
-      }
+      "directions": {
+        "north": "3"
+      },
+      "npc": ["kaplan"]
     },
     "3": {
       "description": "Wchodzisz do niewielkiego laboratorium. Przy zachodniej ścianie stoi pokaźnych rozmiarów biblioteczka. Przy północnej ścianie stoi łóżko, biurko oraz okuta skrzynia. Przy wschodniej ścianie stoi komoda.",
       "items": {
-        "biblioteczka": "",
-        "lozko": "",
-        "biurko": "",
-        "skrzynia": "",
-        "komoda": "",
+        "biblioteczka": "Przeszukujesz biblioteczkę w poszukiwaniu Księgi Ziół. Po 10 minutach czytania grzbietów mniejszych i większych ksiąg o zielonej okładce znajdujesz to po co przyszedłeś.\nOtrzymujesz: Księga Ziół",
+        "lozko": "Ja: Nie chce mi się spać.",
+        "biurko": "Nie znajdujesz nic ciekawego.",
+        "skrzynia": "Skrzynia jest zamknięta.",
+        "komoda": "Znajdujesz: 2SZ",
       },
       "directions": {
         "south": "2"
@@ -174,15 +190,7 @@ export class NarratorConsoleComponent implements OnInit {
   };
 
   dialoguesTable = {
-    "kaplan" : {
-      "start" : "0 Verdes: O, w końcu się obudziłeś Zbyszek. Jak się czujesz? -> 1\n1 Ja: Głowa mnie boli, gdzie ja właściwie jestem? -> 2\n2 Verdes: Jesteś w Kaplicy Czystości, niedaleko Anderveltu. -> 3\n3 Ja: Ja... nie wiem kim jestem i skąd się tu wziąłem. Skąd znasz moje imię i dlaczego ja go nie pamiętam? Czym jest Andervelt? Jaka Kaplica? -> 4\n4 Verdes: Spokojnie chłopcze. Rozumiem, masz wiele pytań, ale wszystko po kolei. Najpierw musimy sprawdzić jak się czujesz. Wyglądasz w porządku, jednak nie mogę być pewien czy mi tu zaraz nie zasłabniesz. Udaj się drzwiami na północy do laboratorium i przynieś mi Księgę Ziół. [5,6]\n5 No to idę. -> koniec \n6 A gdzie konkretnie jej szukać? -> 7\n7erdes: Tak jak mówiłem wejdź do laboratorium. Będzie tam biblioteczka. Książkę poznasz po zielonej okładce no i rzecz jasna po tytule.",
-      "options": {
-        '1': "koniec",
-        '2': "odp2"
-      },
-      "odp2": "Verdes: Tak jak mówiłem wejdź do laboratorium. Będzie tam biblioteczka. Książkę poznasz po zielonej okładce no i rzecz jasna po tytule.<br><br>Tutor: Jeśli w komnacie występują więcej niż jedne drzwi należy wpisać drzwix, gdzie x jest kierunkiem w jakim znajdują się drzwi."
-    },
-    "koniec" : "g"
+    "kaplan" : "0 Verdes: O, w końcu się obudziłeś Zbyszek. Jak się czujesz? -> 1\n1 Ja: Głowa mnie boli, gdzie ja właściwie jestem? -> 2\n2 Verdes: Jesteś w Kaplicy Czystości, niedaleko Anderveltu. -> 3\n3 Ja: Ja... nie wiem kim jestem i skąd się tu wziąłem. Skąd znasz moje imię i dlaczego ja go nie pamiętam? Czym jest Andervelt? Jaka Kaplica? -> 4\n4 Verdes: Spokojnie chłopcze. Rozumiem, masz wiele pytań, ale wszystko po kolei. Najpierw musimy sprawdzić jak się czujesz. Wyglądasz w porządku, jednak nie mogę być pewien czy mi tu zaraz nie zasłabniesz. Udaj się drzwiami na północy do laboratorium i przynieś mi Księgę Ziół. [5,6]\n5 No to idę. -> 9 \n6 A gdzie konkretnie jej szukać? -> 7\n7 Verdes: Tak jak mówiłem wejdź do laboratorium. Będzie tam biblioteczka. Książkę poznasz po zielonej okładce no i rzecz jasna po tytule. [5]\n8 Verdes: A więc jesteś i widzę, że masz moją księgę. Świetnie, w takim razie teraz możemy porozmawiać o tobie. -> 9\n9 koniec",
   };
 
 // The state of a dialogue; this is a matrix of players and actors,
@@ -246,16 +254,18 @@ __setDialogue = function(actor, dialogue){
  * @return the dialogue to show (text) and also any responses to display
  */
 interact = function(actor,player,response = undefined){
-    
     var state = this.__getState(actor, player);
-    var dialogue;
+    let dialogue;
     //
     // If a response id is passed along, see if it matches a dialogue element
     //
-    console.log('response:', response);
     if (response){
+      try{//TODO something with undefined variable, how to check if undefined before trying to access it?
+        response = this.dialogues[actor][state].responses[response - 1] || response;
+      } catch(e){
+        console.log(e);
+      }
         var response_dialogue = this.__getDialogue(actor,response);
-        console.log('response_dialogue:', response_dialogue);
         if ((/[^null]/g && /[^undefined]/g).test(response_dialogue)){
           
             //
@@ -264,7 +274,6 @@ interact = function(actor,player,response = undefined){
             //
             if (parseInt(response)){
                 state = response_dialogue.next;
-                alert(state);
                 this.__setState(actor, player, state);
                 dialogue = this.__getDialogue(actor,state);
             } else {
@@ -275,7 +284,6 @@ interact = function(actor,player,response = undefined){
                 dialogue = response_dialogue;
             }
         } 
-        console.log('pomonalem funckje');
         //
         // Process events
         //
