@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommandSupportService } from '../../Services/command-support.service';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-player-console',
@@ -20,6 +21,7 @@ export class PlayerConsoleComponent implements OnInit {
   addCommand(command: string) {
     this.lastUsedCommands.push(command);
     this.lastUsedCommands.splice(0,1);
+    $("#data").val("");
     command = command.toLowerCase();
     this.dataCSS.processCommand(command);
     return false;

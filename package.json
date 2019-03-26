@@ -22,10 +22,12 @@
     "@ng-bootstrap/ng-bootstrap": "^4.1.0",
     "angular-audio-context": "^21.0.4",
     "core-js": "^2.5.4",
+    "dialoguejs": "^0.1.5",
     "jquery.terminal": "^2.2.0",
     "popper": "^1.0.1",
     "rxjs": "^6.3.3",
     "tslib": "^1.9.0",
+    "typed.js": "^2.0.10",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
