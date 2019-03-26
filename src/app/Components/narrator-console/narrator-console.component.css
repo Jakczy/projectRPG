@@ -13,7 +13,6 @@ ul, ul li{
     cursor: pointer;
 }
 p::before{
-    content: "\A";
     white-space: pre;
 }
 pre{

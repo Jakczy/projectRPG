@@ -18,7 +18,6 @@ export class NarratorConsoleComponent implements OnInit {
     this.dataCSS.getEventSubject().subscribe((command: string) => {
       if (command !== undefined) this.playerInput(command);
     });
-    this.load("kaplan", this.dialoguesTable['kaplan']);
     //Maybe TODO Clicking on list variable send command to player console
     $('lu li').click(() => {
       alert($(this).text());
@@ -35,7 +34,9 @@ export class NarratorConsoleComponent implements OnInit {
   }
 
   writeText(text:string){
-    $('#narratorConsole').append(text);
+    $('#narratorConsole').append("<p>" + text + "</p>");
+    $("#narratorConsole").scrollTop($("#narratorConsole")[0].scrollHeight);
+    //$("html, #narratorConsole").animate({ scrollTop: $(document).height() }, "slow");
   }
 
   changeRoom(dir: string){
@@ -66,40 +67,34 @@ export class NarratorConsoleComponent implements OnInit {
   }
 
   playerMenuInput(input:string){
-    this.writeText('<p>');
     switch(input){
       case 'nowa gra': this.currentState = 'g'; this.writeText(this.rooms[this.currentRoom].start); break;
       case 'wczytaj': this.writeText('Not implemented yet'); break;
       default: this.writeText('Hmm?');
     }
-    this.writeText('</p>');
-    $("html, #narratorConsole").animate({ scrollTop: $(document).height() }, "slow");
   }
 
   playerGameInput(input:string){
-    this.writeText('<p>');
     switch(input){
       case 'spojrz': this.writeText(this.rooms[this.currentRoom].description); break;
-      case 'north' || 'south' || 'east' || 'west' : this.changeRoom(input); break;
+      case 'north': case 'south': case 'east': case 'west': this.changeRoom(input); break;
       case 'help': this.showHelp(); break;
       default: switch(input.split(' ')[0]){
         case 'idz': this.changeRoom(input.split(' ')[1]); break;
         case 'uzyj': this.useItem(input.split(' ')[1]); break;
-        case 'rozmawiaj': this.dialogueControl(input.split(' ')[1]); break;
+        case 'rozmawiaj': this.initiateDialogue(input.split(' ')[1]); break;
         default: this.writeText('Hmm?');
       }
     }
-    this.writeText('</p>');
-    $("html, #narratorConsole").animate({ scrollTop: $(document).height() }, "slow");
   }
 
   playerFightInput(input:string){
   }
 
-  dialogueControl(actor:string){
+  initiateDialogue(actor:string){
     let flag;
     for(var i = 0; i < this.rooms[this.currentRoom].npc.length; i++){
-      if(this.rooms[this.currentRoom].npc[0] === actor){
+      if(this.rooms[this.currentRoom].npc[i] === actor){
         flag = 1;
         break;
       }
@@ -107,13 +102,13 @@ export class NarratorConsoleComponent implements OnInit {
     console.log(flag);
     if(flag){
       this.playerChangeInput('d');
+      this.parse(actor, this.dialoguesTable[actor]);
       this.currentActor = actor;
       this.playerInput('');
     }
   }
 
   playerDialogueInput(input:string){
-    this.writeText('<p>');
     var dialogue = this.interact(this.currentActor, "gracz", input);
     console.log('dialogue: ', dialogue);
     if(dialogue.text === 'koniec'){
@@ -124,12 +119,10 @@ export class NarratorConsoleComponent implements OnInit {
       this.writeText(dialogue.text);
       if(dialogue.responses) {
         for(var i = 0; i < dialogue.responses.length; i++){
-         this.writeText('\n[' + (i+1) + '] ' + dialogue.responses[i].text);
+         this.writeText('[' + (i+1) + '] ' + dialogue.responses[i].text);
         }
       }
     }
-    this.writeText('</p>');
-    $("html, #narratorConsole").animate({ scrollTop: $(document).height() }, "slow");
   }
 
   showHelp(){
@@ -241,7 +234,6 @@ __setDialogue = function(actor, dialogue){
   if((/[^null]/g && /[^undefined]/g).test(dialogue.next)) this.dialogues[actor][dialogue.id].next = dialogue.next;
   if((/[^null]/g && /[^undefined]/g).test(dialogue.responses)) this.dialogues[actor][dialogue.id].responses = dialogue.responses;
 }
-
 /*
  * Enact a dialogue 
  *
@@ -313,52 +305,36 @@ interact = function(actor,player,response = undefined){
         this.__setState(actor, player, dialogue.next);
     }
     return dialogue_processed;
-}
+  }
 
-/*
- * Parse a simple dialogue tree file
- */
-parse = function(actor, text){
-   var lines = text.match(/^.*((\r\n|\n|\r)|$)/gm);
-   for (var line in lines){
-        var dialogue_line =  lines[line];
-        var dialogue = dialogue || {};
-        //
-        // Each line starts with a number (the id) or a word (topic)
-        //
-        dialogue.id = parseInt(dialogue_line);
-        if (isNaN(dialogue.id)){
-            dialogue.id = dialogue_line.substr(0, dialogue_line.indexOf(":"));
-            dialogue_line = dialogue_line.substr(dialogue.id.toString().length+1);
-        } else {
-            dialogue_line = dialogue_line.substr(dialogue.id.toString().length);
-        }
-        //
-        // At the end is either a choice [1,2] or a next -> indicator
-        //
-        if (dialogue_line.indexOf("->") != -1){
-            var str = dialogue_line.split("->");
-            dialogue_line = str[0];
-            dialogue.next= parseInt(str[1]);
-        }
-        if (dialogue_line.indexOf("[") != -1){
-            var choices = dialogue_line.substr(dialogue_line.indexOf("["));
-            dialogue.responses = JSON.parse(choices);
-            dialogue_line = dialogue_line.split("[")[0];
-        }
-        dialogue.text = dialogue_line.trim();
-        this.__setDialogue(actor, dialogue);
+  parse = function(actor, text){
+    var lines = text.match(/^.*((\r\n|\n|\r)|$)/gm);
+    for (var line in lines){
+      var dialogue_line =  lines[line];
+      var dialogue = dialogue || {};
+      //
+      // Each line starts with a number (the id) or a word (topic)
+      //
+      dialogue.id = parseInt(dialogue_line);
+      if (isNaN(dialogue.id)){
+        dialogue.id = dialogue_line.substr(0, dialogue_line.indexOf(":"));
+        dialogue_line = dialogue_line.substr(dialogue.id.toString().length+1);
+      } else {
+        dialogue_line = dialogue_line.substr(dialogue.id.toString().length);
+      }
+      if (dialogue_line.indexOf("->") != -1){
+        var str = dialogue_line.split("->");
+        dialogue_line = str[0];
+        dialogue.next= parseInt(str[1]);
+      }
+      if (dialogue_line.indexOf("[") != -1){
+        var choices = dialogue_line.substr(dialogue_line.indexOf("["));
+        dialogue.responses = JSON.parse(choices);
+        dialogue_line = dialogue_line.split("[")[0];
+      }
+      dialogue.text = dialogue_line.trim();
+      this.__setDialogue(actor, dialogue);
     }
-}
-
-/*
- * Loads a dialogue file
- * @param actor the actor to associate with the dialogue
- * @file the path to the file
- * @return a dialogue object
- */
-  load = function(actor, data){
-    this.parse(actor, data);
   }
 }
 
