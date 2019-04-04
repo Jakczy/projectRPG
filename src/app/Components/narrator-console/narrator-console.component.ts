@@ -50,10 +50,18 @@ export class NarratorConsoleComponent implements OnInit {
   }
 
   useItem(dir:string){
-      if ((/[^null]/g && /[^undefined]/g).test(this.rooms[this.currentRoom].items[dir])){
-        if(typeof this.rooms[this.currentRoom].items[dir] === 'string'){
-          this.writeText(this.rooms[this.currentRoom].items[dir]);
-        } else this.rooms[this.currentRoom].items[dir]();
+    dir = this.rooms[this.currentRoom].items[dir];
+      if ((/[^null]/g && /[^undefined]/g).test(dir)){
+        this.writeText(dir[0]);
+        if((/[^null]/g && /[^undefined]/g).test(dir[1])){
+          for(var i = 0; i < dir[1].length; i++){
+            console.log(dir[1][i]);
+            if(dir[1][i][1]){
+              this.addToBackPack(this.rooms[this.currentRoom].items[dir][1][i][0], this.rooms[this.currentRoom].items[dir][1][i][1]);
+            } else this.addToBackPack(this.rooms[this.currentRoom].items[dir][1][i]);
+          }
+          this.rooms[this.currentRoom].items[dir] = "Nic tu nie ma";
+        } 
       } else this.writeText("Hmm?");
   }
 
@@ -89,12 +97,6 @@ export class NarratorConsoleComponent implements OnInit {
         case 'rozmawiaj': this.initiateDialogue(input.split(' ')[1]); break;
         default: this.writeText('Hmm?');
       }
-    }
-  }
-
-  showBackPack(){
-    for(var i = 0; i < this.player.backPack.length; i++){
-      this.writeText(this.player.backPack[i]);
     }
   }
 
@@ -144,13 +146,22 @@ export class NarratorConsoleComponent implements OnInit {
     }
   }
 
-  addToBackPack(quantity:number, id:string){
-    if(id === "0001"){
-      this.player.gold =+ quantity;
-    } else {
-      this.player.backPack.push(id);
+  showBackPack(){
+    console.log(this.player.backPack.length);
+    for(var i = 0; i < this.player.backPack.length; i++){
+      this.writeText(this.items[this.player.backPack[i]].name);
     }
-    return false;
+  }
+
+  addToBackPack(id:number, quantity:number = 1){
+    if(id === 1){
+      this.player.gold += quantity;
+    } else {
+      for(var i = 0; i < quantity; i++){
+        console.log(id);
+        this.player.backPack.push(id);
+      }
+    }
   }
 
   currentActor = 'default';
@@ -167,7 +178,7 @@ export class NarratorConsoleComponent implements OnInit {
     "backPack": [],
     "gold": 0,
   }
-  currentRoom = "2";
+  currentRoom = "1";
   quests = {
     "1": {
       "id": "1",
@@ -177,11 +188,11 @@ export class NarratorConsoleComponent implements OnInit {
   };
   commands = ['idź [gdzie]', 'podnieś [co]', 'spójrz', 'rozmawiaj [imie]', 'użyj [co]', 'zapisz [nazwa]', 'wczytaj [nazwa]', 'załóż [co]'];
   items = {
-    "0001": {
+    1: {
       "name": "Złota moneta",
       "value": 1,
     },
-    "0002": {
+    2: {
       "name": "Onuce",
       "value": 5,
       "equipment": "legs",
@@ -202,8 +213,8 @@ export class NarratorConsoleComponent implements OnInit {
       "tutor": "Tutor: Witaj w grze „Ku chwale Gothica”. Nie bój się. Podstawowych komend i zasad gry nauczysz się w trakcie tego prologu. Jeżeli chcesz wyświetlić wszystkie dostępne w grze komendy wpisz <b>help</b>. Aktualnie znajdujesz się w jednej z setek lokacji, które przyjdzie ci zwiedzać. Aby rozejrzeć się po okolicy użyj polecenia <b>spojrz</b>. Zrób to teraz.",
       "description": "Rozglądasz się po marmurowym pokoju. Na północy widzisz okute drewniane drzwi. Przy wschodniej ścianie stoi komoda. Przy południowej łóżko na którym spałeś. Od zachodniej ściany bije jasne, kolorowe światło słoneczne przedostające się przez wielobarwny witraż.",
       "items": {
-        "komoda": function() {this.addToBackPack(10,'0001');this.addToBackPack(1,'0002')},
-        "lozko": function() {alert("Nie chcę mi się spać.")},
+        "komoda": ["Znajdujesz: 10 ZM, Onuce",[[1,10],2]],
+        "lozko": "Nie chce mi się spać",
       },
       "directions": {
         "north": "2"
