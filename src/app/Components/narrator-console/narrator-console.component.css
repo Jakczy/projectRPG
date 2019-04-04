@@ -12,9 +12,6 @@ ul, ul li{
     list-style-type: none;
     cursor: pointer;
 }
-p::before{
-    white-space: pre;
-}
 pre{
     color: chartreuse;
     text-align: center;
