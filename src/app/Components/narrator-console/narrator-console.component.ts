@@ -72,7 +72,7 @@ export class NarratorConsoleComponent implements OnInit {
 
   playerMenuInput(input:string){
     switch(input){
-      case 'nowa gra': this.currentState = 'g'; this.writeText(this.rooms[this.currentRoom].start); break;
+      case 'nowa gra': this.playerChangeInput('g'); this.writeText(this.rooms[this.currentRoom].start); break;
       case 'wczytaj': this.writeText('Not implemented yet'); break;
     }
   }
@@ -82,12 +82,19 @@ export class NarratorConsoleComponent implements OnInit {
       case 'spojrz': this.writeText(this.rooms[this.currentRoom].description); break;
       case 'north': case 'south': case 'east': case 'west': this.changeRoom(input); break;
       case 'help': this.showHelp(); break;
+      case 'pokaz': this.showBackPack(); break;
       default: switch(input.split(' ')[0]){
         case 'idz': this.changeRoom(input.split(' ')[1]); break;
         case 'uzyj': this.useItem(input.split(' ')[1]); break;
         case 'rozmawiaj': this.initiateDialogue(input.split(' ')[1]); break;
         default: this.writeText('Hmm?');
       }
+    }
+  }
+
+  showBackPack(){
+    for(var i = 0; i < this.player.backPack.length; i++){
+      this.writeText(this.player.backPack[i]);
     }
   }
 
@@ -137,26 +144,50 @@ export class NarratorConsoleComponent implements OnInit {
     }
   }
 
+  addToBackPack(quantity:number, id:string){
+    if(id === "0001"){
+      this.player.gold =+ quantity;
+    } else {
+      this.player.backPack.push(id);
+    }
+    return false;
+  }
+
   currentActor = 'default';
   currentDialogue = "default";
   currentState = 'm';
   previousRoom = "default";
-  currentRoom = "2";
-  backPack = [];
-  equipment = {
-    "head": "",
-    "torso": "",
-    "legs": "",
-    "weapon": "",
+  player = {
+    "equipment": {
+      "head": "",
+      "torso": "",
+      "legs": "",
+      "weapon": "",
+    },
+    "backPack": [],
+    "gold": 0,
   }
+  currentRoom = "2";
   quests = {
     "1": {
       "id": "1",
       "status": "notStarted",
-      "name": "Księga z ziołami"
+      "name": "Księga z ziołami",
     },
   };
   commands = ['idź [gdzie]', 'podnieś [co]', 'spójrz', 'rozmawiaj [imie]', 'użyj [co]', 'zapisz [nazwa]', 'wczytaj [nazwa]', 'załóż [co]'];
+  items = {
+    "0001": {
+      "name": "Złota moneta",
+      "value": 1,
+    },
+    "0002": {
+      "name": "Onuce",
+      "value": 5,
+      "equipment": "legs",
+      "defense": 1,
+    },
+  }
   tutor = {
     "1": "Tutor: Witaj w grze „Ku chwale Gothica”. Nie bój się. Podstawowych komend i zasad gry nauczysz się w trakcie tego prologu. Jeżeli chcesz wyświetlić wszystkie dostępne w grze komendy wpisz <b>help</b>. Aktualnie znajdujesz się w jednej z setek lokacji, które przyjdzie ci zwiedzać. Aby rozejrzeć się po okolicy użyj polecenia <b>spojrz</b>. Zrób to teraz.",
     "2": "Tutor: Aby wejść w interakcję z otoczeniem wystarczy wpisać polecenie <b>użyj</b>. Spróbuj otworzyć komodę.",
@@ -168,9 +199,10 @@ export class NarratorConsoleComponent implements OnInit {
   rooms = {
     "1": {
       "start": "Budzisz się. Ostre światło razi twe jeszcze senne oczy. Znajdujesz się w surowym, zbudowanym z marmuru pomieszczeniu. Wstajesz z drewnianego łóżka.",
+      "tutor": "Tutor: Witaj w grze „Ku chwale Gothica”. Nie bój się. Podstawowych komend i zasad gry nauczysz się w trakcie tego prologu. Jeżeli chcesz wyświetlić wszystkie dostępne w grze komendy wpisz <b>help</b>. Aktualnie znajdujesz się w jednej z setek lokacji, które przyjdzie ci zwiedzać. Aby rozejrzeć się po okolicy użyj polecenia <b>spojrz</b>. Zrób to teraz.",
       "description": "Rozglądasz się po marmurowym pokoju. Na północy widzisz okute drewniane drzwi. Przy wschodniej ścianie stoi komoda. Przy południowej łóżko na którym spałeś. Od zachodniej ściany bije jasne, kolorowe światło słoneczne przedostające się przez wielobarwny witraż.",
       "items": {
-        "komoda": "Znajdujesz: 10 ZM (złota moneta), onuce.",
+        "komoda": function() {this.addToBackPack(10,'0001');this.addToBackPack(1,'0002')},
         "lozko": function() {alert("Nie chcę mi się spać.")},
       },
       "directions": {
