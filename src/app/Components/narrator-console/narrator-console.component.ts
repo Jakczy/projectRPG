@@ -3,7 +3,6 @@ import { CommandSupportService } from '../../Services/command-support.service';
 import {DialoguesService} from '../../Services/dialogues.service';
 import * as $ from 'jquery';
 
-
 @Component({
   selector: 'app-narrator-console',
   templateUrl: './narrator-console.component.html',
@@ -35,7 +34,7 @@ export class NarratorConsoleComponent implements OnInit {
     audio.play();
   }
 
-  writeText(text:string){
+  writeText(text:string = "Hmm?"){
     $('#narratorConsole').append(text + "<br>");
     $("#narratorConsole").scrollTop($("#narratorConsole")[0].scrollHeight);
     //$("html, #narratorConsole").animate({ scrollTop: $(document).height() }, "slow"); //Old scrolling
@@ -50,19 +49,23 @@ export class NarratorConsoleComponent implements OnInit {
   }
 
   useItem(dir:string){
-    dir = this.rooms[this.currentRoom].items[dir];
-      if ((/[^null]/g && /[^undefined]/g).test(dir)){
-        this.writeText(dir[0]);
-        if((/[^null]/g && /[^undefined]/g).test(dir[1])){
-          for(var i = 0; i < dir[1].length; i++){
-            console.log(dir[1][i]);
-            if(dir[1][i][1]){
-              this.addToBackPack(this.rooms[this.currentRoom].items[dir][1][i][0], this.rooms[this.currentRoom].items[dir][1][i][1]);
-            } else this.addToBackPack(this.rooms[this.currentRoom].items[dir][1][i]);
-          }
-          this.rooms[this.currentRoom].items[dir] = "Nic tu nie ma";
-        } 
-      } else this.writeText("Hmm?");
+    if ((/[^null]/g && /[^undefined]/g).test(this.rooms[this.currentRoom].items[dir])){
+      if(this.rooms[this.currentRoom].items[dir][0].length === 1){
+        this.writeText(this.rooms[this.currentRoom].items[dir]);
+      }
+      if((/[^null]/g && /[^undefined]/g).test(this.rooms[this.currentRoom].items[dir][1])){
+        this.writeText(this.rooms[this.currentRoom].items[dir][0]);
+        for(var i = 0; i < this.rooms[this.currentRoom].items[dir][1].length; i++){
+          console.log(this.rooms[this.currentRoom].items[dir][1][i]);
+          if(this.rooms[this.currentRoom].items[dir][1][i][1]){
+            this.addToBackPack(this.rooms[this.currentRoom].items[dir][1][i][0], this.rooms[this.currentRoom].items[dir][1][i][1]);
+          } else this.addToBackPack(this.rooms[this.currentRoom].items[dir][1][i]);
+        }
+        
+        this.rooms[this.currentRoom].items[dir] = 'Nic tu nie ma';
+        console.log(this.rooms[this.currentRoom].items[dir]);
+      } 
+    } else this.writeText("Hmm?");
   }
 
   playerChangeInput(dir:string){
@@ -95,6 +98,7 @@ export class NarratorConsoleComponent implements OnInit {
         case 'idz': this.changeRoom(input.split(' ')[1]); break;
         case 'uzyj': this.useItem(input.split(' ')[1]); break;
         case 'rozmawiaj': this.initiateDialogue(input.split(' ')[1]); break;
+        case 'zaloz': this.equip(input.split(' ')[1]); break;
         default: this.writeText('Hmm?');
       }
     }
@@ -146,6 +150,10 @@ export class NarratorConsoleComponent implements OnInit {
     }
   }
 
+  equip(input:string){
+
+  }
+
   showBackPack(){
     console.log(this.player.backPack.length);
     for(var i = 0; i < this.player.backPack.length; i++){
@@ -182,6 +190,7 @@ export class NarratorConsoleComponent implements OnInit {
   quests = {
     "1": {
       "id": "1",
+      "giver": "kaplan",
       "status": "notStarted",
       "name": "Księga z ziołami",
     },
@@ -198,6 +207,9 @@ export class NarratorConsoleComponent implements OnInit {
       "equipment": "legs",
       "defense": 1,
     },
+    3: {
+      "name": "Ksiega ziół",
+    }
   }
   tutor = {
     "1": "Tutor: Witaj w grze „Ku chwale Gothica”. Nie bój się. Podstawowych komend i zasad gry nauczysz się w trakcie tego prologu. Jeżeli chcesz wyświetlić wszystkie dostępne w grze komendy wpisz <b>help</b>. Aktualnie znajdujesz się w jednej z setek lokacji, które przyjdzie ci zwiedzać. Aby rozejrzeć się po okolicy użyj polecenia <b>spojrz</b>. Zrób to teraz.",
@@ -232,7 +244,7 @@ export class NarratorConsoleComponent implements OnInit {
     "3": {
       "description": "Wchodzisz do niewielkiego laboratorium. Przy zachodniej ścianie stoi pokaźnych rozmiarów biblioteczka. Przy północnej ścianie stoi łóżko, biurko oraz okuta skrzynia. Przy wschodniej ścianie stoi komoda.",
       "items": {
-        "biblioteczka": "Przeszukujesz biblioteczkę w poszukiwaniu Księgi Ziół. Po 10 minutach czytania grzbietów mniejszych i większych ksiąg o zielonej okładce znajdujesz to po co przyszedłeś.\nOtrzymujesz: Księga Ziół",
+        "biblioteczka": ["Przeszukujesz biblioteczkę w poszukiwaniu Księgi Ziół. Po 10 minutach czytania grzbietów mniejszych i większych ksiąg o zielonej okładce znajdujesz to po co przyszedłeś.",[3]],
         "lozko": "Ja: Nie chce mi się spać.",
         "biurko": "Nie znajdujesz nic ciekawego.",
         "skrzynia": "Skrzynia jest zamknięta.",
@@ -245,7 +257,7 @@ export class NarratorConsoleComponent implements OnInit {
   };
 
   dialoguesTable = {
-    "kaplan" : "0 Verdes: O, w końcu się obudziłeś Zbyszek. Jak się czujesz? -> 1\n1 Ja: Głowa mnie boli, gdzie ja właściwie jestem? -> 2\n2 Verdes: Jesteś w Kaplicy Czystości, niedaleko Anderveltu. -> 3\n3 Ja: Ja... nie wiem kim jestem i skąd się tu wziąłem. Skąd znasz moje imię i dlaczego ja go nie pamiętam? Czym jest Andervelt? Jaka Kaplica? -> 4\n4 Verdes: Spokojnie chłopcze. Rozumiem, masz wiele pytań, ale wszystko po kolei. Najpierw musimy sprawdzić jak się czujesz. Wyglądasz w porządku, jednak nie mogę być pewien czy mi tu zaraz nie zasłabniesz. Udaj się drzwiami na północy do laboratorium i przynieś mi Księgę Ziół. [5,6]\n5 No to idę. -> 9 \n6 A gdzie konkretnie jej szukać? -> 7\n7 Verdes: Tak jak mówiłem wejdź do laboratorium. Będzie tam biblioteczka. Książkę poznasz po zielonej okładce no i rzecz jasna po tytule. [5]\n8 Verdes: A więc jesteś i widzę, że masz moją księgę. Świetnie, w takim razie teraz możemy porozmawiać o tobie. -> 9\n9 koniec",
+    "kaplan": "0 Verdes: O, w końcu się obudziłeś Zbyszek. Jak się czujesz? -> 1\n1 Ja: Głowa mnie boli, gdzie ja właściwie jestem? -> 2\n2 Verdes: Jesteś w Kaplicy Czystości, niedaleko Anderveltu. -> 3\n3 Ja: Ja... nie wiem kim jestem i skąd się tu wziąłem. Skąd znasz moje imię i dlaczego ja go nie pamiętam? Czym jest Andervelt? Jaka Kaplica? -> 4\n4 Verdes: Spokojnie chłopcze. Rozumiem, masz wiele pytań, ale wszystko po kolei. Najpierw musimy sprawdzić jak się czujesz. Wyglądasz w porządku, jednak nie mogę być pewien czy mi tu zaraz nie zasłabniesz. Udaj się drzwiami na północy do laboratorium i przynieś mi Księgę Ziół. [5,6]\n5 No to idę. -> 9 \n6 A gdzie konkretnie jej szukać? -> 7\n7 Verdes: Tak jak mówiłem wejdź do laboratorium. Będzie tam biblioteczka. Książkę poznasz po zielonej okładce no i rzecz jasna po tytule. [5]\n8 Verdes: A więc jesteś i widzę, że masz moją księgę. Świetnie, w takim razie teraz możemy porozmawiać o tobie. -> 9\n9 koniec",
   };
 }
 
