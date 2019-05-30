@@ -29,7 +29,7 @@ export class NarratorConsoleComponent implements OnInit {
   //It's working but only with external src like: links because webpage cant access files on your pc directly
   playAudio(){
     var audio = new Audio();
-    audio.src = '';//It should be external link.
+    audio.src = 'https://raw.githubusercontent.com/Jakczy/projectRPG/WeekOne_16_03_2019/src/app/Music/main.mp3';//It should be external link.
     audio.load();
     audio.play();
   }
@@ -83,7 +83,7 @@ export class NarratorConsoleComponent implements OnInit {
 
   playerMenuInput(input:string){
     switch(input){
-      case 'nowa gra': this.playerChangeInput('g'); this.writeText(this.rooms[this.currentRoom].start); break;
+      case 'nowa gra': this.playerChangeInput('g'); this.writeText(this.rooms[this.currentRoom].start); this.playAudio(); break;
       case 'wczytaj': this.writeText('Not implemented yet'); break;
     }
   }
