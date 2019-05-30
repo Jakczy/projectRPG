@@ -1,10 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
+
 body{
     background-color: black;
     color: aliceblue;
     margin-left: auto;
     margin-right: auto;
     cursor: default;
+    font-family: 'Press Start 2P', cursive;
 }
 div{
     margin: 0 auto;
@@ -13,37 +16,51 @@ div{
 }
 
 #wrapper{
-    width: 800px;
-    height: 600px;
+    width: 1000px;
+    height: 700px;
     overflow: hidden;
 }
 #narratorConsole{
     float: left;
     height: 300px;
     width: 500px;
-    background-color: aqua;
+    color: white;
 }
 #backgroundPhotos{
     float: left;
     height: 150px;
     width: 500px;
-    background-image: url("https://cache.desktopnexus.com/thumbseg/29/29652-bigthumbnail.jpg");
-    background-color: blue;
+    background-image: url("GRAFIKI\locations\las3.png");
+    background-color: black;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 #playerConsole{
     float: left;
-    height: 150px;
+    height: 200px;
     width: 500px;
 }
 #equipment{
     float: right;
     height: 300px;
-    width: 300px;
-    background-color: wheat;
+    width: 500px;
+    background-color: black;
+    background-image: url("GRAFIKI\others\backpackk.png");
+    color: rgb(0, 243, 0);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
+
 #questLogAndOthers{
     float: right;
-    height: 300px;
-    width: 300px;
-    background-color: tomato;
+    height: 400px;
+    width: 500px;
+    background-color: black;
+    background-image: url("GRAFIKI\others\paper2.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: rgb(0, 243, 0);
 }
