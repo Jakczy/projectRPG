@@ -29,7 +29,7 @@ export class NarratorConsoleComponent implements OnInit {
   //It's working but only with external src like: links because webpage cant access files on your pc directly
   playAudio(){
     var audio = new Audio();
-    audio.src = '';//It should be external link.
+    audio.src = 'https://raw.githubusercontent.com/Jakczy/projectRPG/DayOneOfProject_16_03_2019/src/app/Music/main.mp3';//It should be external link.
     audio.load();
     audio.play();
   }
@@ -45,7 +45,7 @@ export class NarratorConsoleComponent implements OnInit {
       this.previousRoom = this.currentRoom;
       this.currentRoom = this.rooms[this.currentRoom].directions[dir];
       this.writeText(this.rooms[this.currentRoom].description);
-    } else this.writeText("Hmm?");
+    } else this.writeText();
   }
 
   useItem(dir:string){
@@ -65,7 +65,7 @@ export class NarratorConsoleComponent implements OnInit {
         this.rooms[this.currentRoom].items[dir] = 'Nic tu nie ma';
         console.log(this.rooms[this.currentRoom].items[dir]);
       } 
-    } else this.writeText("Hmm?");
+    } else this.writeText();
   }
 
   playerChangeInput(dir:string){
@@ -83,7 +83,7 @@ export class NarratorConsoleComponent implements OnInit {
 
   playerMenuInput(input:string){
     switch(input){
-      case 'nowa gra': this.playerChangeInput('g'); this.writeText(this.rooms[this.currentRoom].start); break;
+      case 'nowa gra': this.playerChangeInput('g'); this.writeText(this.rooms[this.currentRoom].start); this.playAudio(); break;
       case 'wczytaj': this.writeText('Not implemented yet'); break;
     }
   }
@@ -93,13 +93,13 @@ export class NarratorConsoleComponent implements OnInit {
       case 'spojrz': this.writeText(this.rooms[this.currentRoom].description); break;
       case 'north': case 'south': case 'east': case 'west': this.changeRoom(input); break;
       case 'help': this.showHelp(); break;
-      case 'pokaz': this.showBackPack(); break;
+      case 'ekwipunek': this.showBackPack(); break;
       default: switch(input.split(' ')[0]){
         case 'idz': this.changeRoom(input.split(' ')[1]); break;
         case 'uzyj': this.useItem(input.split(' ')[1]); break;
         case 'rozmawiaj': this.initiateDialogue(input.split(' ')[1]); break;
         case 'zaloz': this.equip(input.split(' ')[1]); break;
-        default: this.writeText('Hmm?');
+        default: this.writeText();
       }
     }
   }
@@ -108,20 +108,22 @@ export class NarratorConsoleComponent implements OnInit {
   }
 
   initiateDialogue(actor:string){
-    let flag;
-    for(var i = 0; i < this.rooms[this.currentRoom].npc.length; i++){
-      if(this.rooms[this.currentRoom].npc[i] === actor){
-        flag = 1;
-        break;
+    if(this.rooms[this.currentRoom].npc){
+      let flag;
+      for(var i = 0; i < this.rooms[this.currentRoom].npc.length; i++){
+        if(this.rooms[this.currentRoom].npc[i] === actor){
+          flag = 1;
+          break;
+        }
       }
-    }
-    console.log('flag:', flag);
-    if(flag){
-      this.playerChangeInput('d');
-      this.dialogueS.parse(actor, this.dialoguesTable[actor]);
-      this.currentActor = actor;
-      this.playerInput('');
-    }
+      console.log('flag:', flag);
+      if(flag){
+        this.playerChangeInput('d');
+        this.dialogueS.parse(actor, this.dialoguesTable[actor]);
+        this.currentActor = actor;
+        this.playerInput('');
+      }
+    } else this.writeText();
   }
 
   playerDialogueInput(input:string){
@@ -260,6 +262,3 @@ export class NarratorConsoleComponent implements OnInit {
     "kaplan": "0 Verdes: O, w końcu się obudziłeś Zbyszek. Jak się czujesz? -> 1\n1 Ja: Głowa mnie boli, gdzie ja właściwie jestem? -> 2\n2 Verdes: Jesteś w Kaplicy Czystości, niedaleko Anderveltu. -> 3\n3 Ja: Ja... nie wiem kim jestem i skąd się tu wziąłem. Skąd znasz moje imię i dlaczego ja go nie pamiętam? Czym jest Andervelt? Jaka Kaplica? -> 4\n4 Verdes: Spokojnie chłopcze. Rozumiem, masz wiele pytań, ale wszystko po kolei. Najpierw musimy sprawdzić jak się czujesz. Wyglądasz w porządku, jednak nie mogę być pewien czy mi tu zaraz nie zasłabniesz. Udaj się drzwiami na północy do laboratorium i przynieś mi Księgę Ziół. [5,6]\n5 No to idę. -> 9 \n6 A gdzie konkretnie jej szukać? -> 7\n7 Verdes: Tak jak mówiłem wejdź do laboratorium. Będzie tam biblioteczka. Książkę poznasz po zielonej okładce no i rzecz jasna po tytule. [5]\n8 Verdes: A więc jesteś i widzę, że masz moją księgę. Świetnie, w takim razie teraz możemy porozmawiać o tobie. -> 9\n9 koniec",
   };
 }
-
-
-
